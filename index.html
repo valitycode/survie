@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Neon Arena Survival</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="bgGlow"></div>
+
+    <main id="gameShell">
+      <section id="menuScreen" class="screen active">
+        <div class="panel hero-panel">
+          <div class="title-wrap">
+            <p class="eyebrow">Survie • Mobile • Arcade</p>
+            <h1>Neon Arena Survival</h1>
+            <p class="subtitle">
+              Tiens le plus longtemps possible dans une petite arène stylisée.
+              Déplace-toi, monte de niveau, choisis tes améliorations et repousse des vagues d’ennemis de plus en plus intenses.
+            </p>
+          </div>
+
+          <div class="menu-cards">
+            <article class="info-card">
+              <h2>Contrôles</h2>
+              <ul>
+                <li>Joystick tactile sur téléphone / tablette</li>
+                <li>Mode clavier AZERTY activable dans les paramètres</li>
+                <li>Attaque automatique sur l’ennemi le plus proche</li>
+              </ul>
+            </article>
+
+            <article class="info-card">
+              <h2>Boucle de jeu</h2>
+              <ul>
+                <li>Élimine les ennemis</li>
+                <li>Ramasse l’expérience</li>
+                <li>Choisis 1 amélioration parmi 3</li>
+                <li>Survis le plus longtemps possible</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="menu-actions">
+            <button id="playButton" class="primary-btn">Jouer</button>
+            <button id="openSettingsButton" class="secondary-btn">Paramètres</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="screen">
+        <div id="hudTop">
+          <div class="hud-card">
+            <div class="hud-label-row">
+              <span>Vie</span>
+              <span id="healthText">100 / 100</span>
+            </div>
+            <div class="bar health-bar"><div id="healthFill" class="fill"></div></div>
+          </div>
+
+          <div class="hud-card">
+            <div class="hud-label-row">
+              <span>XP</span>
+              <span id="xpText">0 / 10</span>
+            </div>
+            <div class="bar xp-bar"><div id="xpFill" class="fill"></div></div>
+          </div>
+
+          <div class="hud-inline-group">
+            <div class="stat-pill">
+              <span class="stat-name">Temps</span>
+              <strong id="timerText">00:00</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-name">Niveau</span>
+              <strong id="levelText">1</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-name">Score</span>
+              <strong id="scoreText">0</strong>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-name">Vague</span>
+              <strong id="waveText">1</strong>
+            </div>
+          </div>
+        </div>
+
+        <div id="canvasWrap">
+          <canvas id="gameCanvas" width="1280" height="720" aria-label="Jeu de survie"></canvas>
+
+          <div id="floatingButtons">
+            <button id="pauseButton" class="icon-btn" aria-label="Pause">II</button>
+            <button id="settingsButtonInGame" class="icon-btn" aria-label="Paramètres">⚙</button>
+          </div>
+
+          <div id="joystickArea" aria-hidden="true">
+            <div id="joystickBase">
+              <div id="joystickStick"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="levelUpOverlay" class="overlay hidden">
+      <div class="panel overlay-panel large">
+        <p class="overlay-kicker">Montée de niveau</p>
+        <h2>Choisis une amélioration</h2>
+        <p class="overlay-text">Sélectionne 1 bonus pour renforcer ton build.</p>
+        <div id="upgradeChoices" class="upgrade-grid"></div>
+      </div>
+    </div>
+
+    <div id="settingsOverlay" class="overlay hidden">
+      <div class="panel overlay-panel">
+        <div class="overlay-header">
+          <div>
+            <p class="overlay-kicker">Configuration</p>
+            <h2>Paramètres</h2>
+          </div>
+          <button id="closeSettingsButton" class="icon-btn small">✕</button>
+        </div>
+
+        <div class="settings-list">
+          <div class="setting-row">
+            <div>
+              <h3>Mode de déplacement</h3>
+              <p>Joystick tactile ou clavier AZERTY.</p>
+            </div>
+            <div class="segmented">
+              <button class="segment is-active" data-control-mode="joystick" id="controlJoystickButton">Joystick</button>
+              <button class="segment" data-control-mode="keyboard" id="controlKeyboardButton">Clavier AZERTY</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h3>Retour visuel des dégâts</h3>
+              <p>Accentue les impacts et le ressenti arcade.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="screenshakeToggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h3>Affichage des aides</h3>
+              <p>Montre des rappels de commandes et d’infos rapides.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="helpersToggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="settings-help" id="settingsHelpBox">
+          <h3>Raccourcis clavier FR</h3>
+          <p><strong>ZQSD</strong> pour se déplacer.</p>
+          <p><strong>P</strong> pour pause.</p>
+          <p><strong>Entrée</strong> pour relancer après un game over.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="pauseOverlay" class="overlay hidden">
+      <div class="panel overlay-panel compact centered">
+        <p class="overlay-kicker">Pause</p>
+        <h2>Partie en pause</h2>
+        <p class="overlay-text">Reprends quand tu veux.</p>
+        <div class="menu-actions">
+          <button id="resumeButton" class="primary-btn">Reprendre</button>
+          <button id="pauseSettingsButton" class="secondary-btn">Paramètres</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameOverOverlay" class="overlay hidden">
+      <div class="panel overlay-panel centered">
+        <p class="overlay-kicker">Fin de partie</p>
+        <h2>Tu as tenu <span id="finalTime">00:00</span></h2>
+        <div class="results-grid">
+          <div class="result-card">
+            <span>Score final</span>
+            <strong id="finalScore">0</strong>
+          </div>
+          <div class="result-card">
+            <span>Niveau atteint</span>
+            <strong id="finalLevel">1</strong>
+          </div>
+          <div class="result-card">
+            <span>Ennemis éliminés</span>
+            <strong id="finalKills">0</strong>
+          </div>
+          <div class="result-card">
+            <span>Vague max</span>
+            <strong id="finalWave">1</strong>
+          </div>
+        </div>
+        <div class="menu-actions">
+          <button id="restartButton" class="primary-btn">Recommencer</button>
+          <button id="backToMenuButton" class="secondary-btn">Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
