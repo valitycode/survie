@@ -120,7 +120,8 @@ const dom = {
   gameCanvas: document.getElementById('gameCanvas'),
   joystickArea: document.getElementById('joystickArea'),
   joystickBase: document.getElementById('joystickBase'),
-  joystickStick: document.getElementById('joystickStick')
+  joystickStick: document.getElementById('joystickStick'),
+  floatingButtons: document.getElementById('floatingButtons')
 };
 
 const ctx = dom.gameCanvas.getContext('2d');
@@ -565,6 +566,8 @@ class Camera {
     this.shakeY = 0;
     this.shakeAmount = 0;
     this.flash = 0;
+    this.screenOffsetX = 0;
+    this.screenOffsetY = 0;
   }
 
   update(dt, targetX, targetY) {
@@ -593,9 +596,14 @@ class Camera {
     this.flash = 1;
   }
 
+  setScreenOffset(x, y) {
+    this.screenOffsetX = x;
+    this.screenOffsetY = y;
+  }
+
   begin(ctx, canvas) {
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    ctx.translate(canvas.width / 2 + this.screenOffsetX, canvas.height / 2 + this.screenOffsetY);
     ctx.translate(-this.x + this.shakeX, -this.y + this.shakeY);
   }
 
@@ -849,6 +857,8 @@ class Enemy extends Entity {
     this.projectileRadius = def.projectileRadius ?? 0;
     this.projectileLifetime = def.projectileLifetime ?? 0;
     this.flash = 0;
+    this.screenOffsetX = 0;
+    this.screenOffsetY = 0;
   }
 
   takeDamage(amount, game, hitX = this.x, hitY = this.y, aura = false) {
@@ -1267,6 +1277,7 @@ class Game {
       this.input.resetJoystick();
       saveSettings();
       syncSettingsUI();
+      this.updateCameraViewportBias();
       this.showToast('Mode joystick tactile activé.');
     });
 
@@ -1275,6 +1286,7 @@ class Game {
       this.input.resetJoystick();
       saveSettings();
       syncSettingsUI();
+      this.updateCameraViewportBias();
       this.showToast('Mode clavier AZERTY activé.');
     });
 
@@ -1289,6 +1301,7 @@ class Game {
       saveSettings();
       syncSettingsUI();
       this.updateHelperBadge();
+      this.updateCameraViewportBias();
     });
 
     window.addEventListener('keydown', (e) => {
@@ -1319,7 +1332,47 @@ class Game {
     this.canvas.height = Math.round(rect.height * dpr);
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.scale(dpr, dpr);
+    this.updateCameraViewportBias();
     this.render();
+  }
+
+  updateCameraViewportBias() {
+    if (!this.camera) return;
+
+    const rect = this.canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+
+    const isMobileLayout = window.innerWidth <= 980;
+    const hudHeight = isMobileLayout
+      ? Math.min(rect.height * 0.26, dom.hudTop.getBoundingClientRect().height || 220)
+      : Math.min(rect.height * 0.18, dom.hudTop.getBoundingClientRect().height || 150);
+
+    const joystickWidth = settings.controlMode === 'joystick'
+      ? Math.min(rect.width * 0.34, 240) + 28
+      : 16;
+
+    const rightButtonsWidth = (dom.floatingButtons?.getBoundingClientRect().width || 64) + 18;
+
+    const helperHeight = settings.showHelpers && isMobileLayout ? 88 : 28;
+    const joystickHeight = settings.controlMode === 'joystick'
+      ? Math.min(rect.width * 0.34, 240) + 34
+      : 16;
+
+    const bottomReserved = Math.max(joystickHeight, helperHeight) + (isMobileLayout ? 12 : 0);
+    const leftReserved = isMobileLayout ? joystickWidth : 12;
+    const rightReserved = isMobileLayout ? Math.max(rightButtonsWidth, 76) : 12;
+    const topReserved = hudHeight + (isMobileLayout ? 18 : 10);
+
+    const playableWidth = Math.max(180, rect.width - leftReserved - rightReserved);
+    const playableHeight = Math.max(180, rect.height - topReserved - bottomReserved);
+
+    const targetCenterX = leftReserved + playableWidth / 2;
+    const targetCenterY = topReserved + playableHeight / 2;
+
+    const offsetX = targetCenterX - rect.width / 2;
+    const offsetY = targetCenterY - rect.height / 2;
+
+    this.camera.setScreenOffset(offsetX, offsetY);
   }
 
   startRun() {
@@ -1344,6 +1397,7 @@ class Game {
     this.camera = new Camera();
     this.camera.x = this.player.x;
     this.camera.y = this.player.y;
+    this.updateCameraViewportBias();
     this.state = 'running';
     dom.menuScreen.classList.remove('active');
     dom.gameScreen.classList.add('active');
