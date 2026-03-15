@@ -5,122 +5,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Neon Arena Survival</title>
+  <title>Neon Arena Survival Premium</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app">
-    <div id="bgGlow"></div>
+    <div class="bg-orb orb-a"></div>
+    <div class="bg-orb orb-b"></div>
+    <div class="bg-orb orb-c"></div>
 
-    <main id="gameShell">
-      <section id="menuScreen" class="screen active">
-        <div class="panel hero-panel">
-          <div class="title-wrap">
-            <p class="eyebrow">Survie • Mobile • Arcade</p>
-            <h1>Neon Arena Survival</h1>
-            <p class="subtitle">
-              Tiens le plus longtemps possible dans une petite arène stylisée.
-              Déplace-toi, monte de niveau, choisis tes améliorations et repousse des vagues d’ennemis de plus en plus intenses.
-            </p>
-          </div>
+    <section id="menuScreen" class="screen active">
+      <div class="panel hero-panel">
+        <p class="eyebrow">Arcade • Mobile • Premium</p>
+        <h1>Neon Arena Survival</h1>
+        <p class="subtitle">
+          Une version mobile retravaillée pour iPhone 16 : interface compacte, zone de jeu mieux centrée,
+          nouveaux ennemis, nouvelles armes et sensation plus premium.
+        </p>
 
-          <div class="menu-cards">
-            <article class="info-card">
-              <h2>Contrôles</h2>
-              <ul>
-                <li>Joystick tactile sur téléphone / tablette</li>
-                <li>Mode clavier AZERTY activable dans les paramètres</li>
-                <li>Attaque automatique sur l’ennemi le plus proche</li>
-              </ul>
-            </article>
+        <div class="hero-grid">
+          <article class="info-card">
+            <h2>Contrôles</h2>
+            <ul>
+              <li>Joystick tactile optimisé téléphone</li>
+              <li>Clavier AZERTY en option dans les paramètres</li>
+              <li>Attaque automatique sur la cible prioritaire</li>
+            </ul>
+          </article>
 
-            <article class="info-card">
-              <h2>Boucle de jeu</h2>
-              <ul>
-                <li>Élimine les ennemis</li>
-                <li>Ramasse l’expérience</li>
-                <li>Choisis 1 amélioration parmi 3</li>
-                <li>Survis le plus longtemps possible</li>
-              </ul>
-            </article>
-          </div>
+          <article class="info-card">
+            <h2>Nouveautés</h2>
+            <ul>
+              <li>HUD compact pour portrait mobile</li>
+              <li>Armes secondaires et pouvoirs</li>
+              <li>Ennemis dashers, tanks, snipers et splitters</li>
+            </ul>
+          </article>
+        </div>
 
-          <div class="menu-actions">
-            <button id="playButton" class="primary-btn">Jouer</button>
-            <button id="openSettingsButton" class="secondary-btn">Paramètres</button>
+        <div class="menu-actions">
+          <button id="playButton" class="primary-btn">Jouer</button>
+          <button id="openSettingsButton" class="secondary-btn">Paramètres</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen">
+      <canvas id="gameCanvas" aria-label="Neon Arena Survival"></canvas>
+
+      <div id="hudTop">
+        <div class="hud-main-row">
+          <div class="wave-pill"><span>Vague</span><strong id="waveText">1</strong></div>
+          <div class="mini-pills">
+            <div class="mini-pill"><span>Temps</span><strong id="timerText">00:00</strong></div>
+            <div class="mini-pill"><span>Niv</span><strong id="levelText">1</strong></div>
+            <div class="mini-pill"><span>Score</span><strong id="scoreText">0</strong></div>
           </div>
         </div>
-      </section>
 
-      <section id="gameScreen" class="screen">
-        <div id="hudTop">
-          <div class="hud-card">
-            <div class="hud-label-row">
-              <span>Vie</span>
-              <span id="healthText">100 / 100</span>
-            </div>
+        <div class="bars-grid">
+          <div class="hud-card compact-card">
+            <div class="hud-label-row"><span>Vie</span><span id="healthText">100 / 100</span></div>
             <div class="bar health-bar"><div id="healthFill" class="fill"></div></div>
           </div>
-
-          <div class="hud-card">
-            <div class="hud-label-row">
-              <span>XP</span>
-              <span id="xpText">0 / 10</span>
-            </div>
+          <div class="hud-card compact-card">
+            <div class="hud-label-row"><span>XP</span><span id="xpText">0 / 12</span></div>
             <div class="bar xp-bar"><div id="xpFill" class="fill"></div></div>
           </div>
-
-          <div class="hud-inline-group">
-            <div class="stat-pill">
-              <span class="stat-name">Temps</span>
-              <strong id="timerText">00:00</strong>
-            </div>
-            <div class="stat-pill">
-              <span class="stat-name">Niveau</span>
-              <strong id="levelText">1</strong>
-            </div>
-            <div class="stat-pill">
-              <span class="stat-name">Score</span>
-              <strong id="scoreText">0</strong>
-            </div>
-            <div class="stat-pill">
-              <span class="stat-name">Vague</span>
-              <strong id="waveText">1</strong>
-            </div>
-          </div>
         </div>
+      </div>
 
-        <div id="canvasWrap">
-          <canvas id="gameCanvas" width="1280" height="720" aria-label="Jeu de survie"></canvas>
+      <div id="floatingButtons">
+        <button id="pauseButton" class="icon-btn" aria-label="Pause">Ⅱ</button>
+        <button id="settingsButtonInGame" class="icon-btn" aria-label="Paramètres">⚙</button>
+      </div>
 
-          <div id="floatingButtons">
-            <button id="pauseButton" class="icon-btn" aria-label="Pause">II</button>
-            <button id="settingsButtonInGame" class="icon-btn" aria-label="Paramètres">⚙</button>
-          </div>
+      <div id="weaponDock">
+        <button class="weapon-chip active" data-weapon="pulse">Pulse</button>
+        <button class="weapon-chip" data-weapon="burst">Burst</button>
+        <button class="weapon-chip" data-weapon="beam">Beam</button>
+      </div>
 
-          <div id="joystickArea" aria-hidden="true">
-            <div id="joystickBase">
-              <div id="joystickStick"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
+      <div id="rightActionStack">
+        <button id="dashButton" class="action-btn secondary-action">Dash</button>
+        <button id="specialButton" class="action-btn">Skill</button>
+      </div>
+
+      <div id="joystickArea" aria-hidden="true">
+        <div id="joystickBase"><div id="joystickStick"></div></div>
+      </div>
+
+      <div id="helperBadge">Glisse le joystick. Le héros vise et tire automatiquement.</div>
+    </section>
 
     <div id="levelUpOverlay" class="overlay hidden">
       <div class="panel overlay-panel large">
         <p class="overlay-kicker">Montée de niveau</p>
-        <h2>Choisis une amélioration</h2>
-        <p class="overlay-text">Sélectionne 1 bonus pour renforcer ton build.</p>
+        <h2>Choisis 1 amélioration</h2>
+        <p class="overlay-text">Fais évoluer ton build pour tenir plus longtemps.</p>
         <div id="upgradeChoices" class="upgrade-grid"></div>
       </div>
     </div>
 
     <div id="settingsOverlay" class="overlay hidden">
-      <div class="panel overlay-panel">
+      <div class="panel overlay-panel settings-panel">
         <div class="overlay-header">
           <div>
-            <p class="overlay-kicker">Configuration</p>
+            <p class="overlay-kicker">Réglages</p>
             <h2>Paramètres</h2>
           </div>
           <button id="closeSettingsButton" class="icon-btn small">✕</button>
@@ -129,33 +120,33 @@
         <div class="settings-list">
           <div class="setting-row">
             <div>
-              <h3>Mode de déplacement</h3>
+              <h3>Contrôle</h3>
               <p>Joystick tactile ou clavier AZERTY.</p>
             </div>
             <div class="segmented">
-              <button class="segment is-active" data-control-mode="joystick" id="controlJoystickButton">Joystick</button>
-              <button class="segment" data-control-mode="keyboard" id="controlKeyboardButton">Clavier AZERTY</button>
+              <button id="controlJoystickButton" class="segment is-active">Joystick</button>
+              <button id="controlKeyboardButton" class="segment">Clavier AZERTY</button>
             </div>
           </div>
 
           <div class="setting-row">
             <div>
-              <h3>Retour visuel des dégâts</h3>
-              <p>Accentue les impacts et le ressenti arcade.</p>
+              <h3>Aides visuelles</h3>
+              <p>Montre les rappels utiles sur mobile.</p>
             </div>
             <label class="switch">
-              <input type="checkbox" id="screenshakeToggle" checked />
+              <input type="checkbox" id="helpersToggle" checked>
               <span class="slider"></span>
             </label>
           </div>
 
           <div class="setting-row">
             <div>
-              <h3>Affichage des aides</h3>
-              <p>Montre des rappels de commandes et d’infos rapides.</p>
+              <h3>Secousses écran</h3>
+              <p>Ressenti plus nerveux quand ça touche.</p>
             </div>
             <label class="switch">
-              <input type="checkbox" id="helpersToggle" checked />
+              <input type="checkbox" id="screenshakeToggle" checked>
               <span class="slider"></span>
             </label>
           </div>
@@ -163,9 +154,11 @@
 
         <div class="settings-help" id="settingsHelpBox">
           <h3>Raccourcis clavier FR</h3>
-          <p><strong>ZQSD</strong> pour se déplacer.</p>
-          <p><strong>P</strong> pour pause.</p>
-          <p><strong>Entrée</strong> pour relancer après un game over.</p>
+          <p>ZQSD : déplacement</p>
+          <p>Maj / Espace : dash</p>
+          <p>E : compétence</p>
+          <p>1 / 2 / 3 : arme</p>
+          <p>P : pause</p>
         </div>
       </div>
     </div>
@@ -187,22 +180,10 @@
         <p class="overlay-kicker">Fin de partie</p>
         <h2>Tu as tenu <span id="finalTime">00:00</span></h2>
         <div class="results-grid">
-          <div class="result-card">
-            <span>Score final</span>
-            <strong id="finalScore">0</strong>
-          </div>
-          <div class="result-card">
-            <span>Niveau atteint</span>
-            <strong id="finalLevel">1</strong>
-          </div>
-          <div class="result-card">
-            <span>Ennemis éliminés</span>
-            <strong id="finalKills">0</strong>
-          </div>
-          <div class="result-card">
-            <span>Vague max</span>
-            <strong id="finalWave">1</strong>
-          </div>
+          <div class="result-card"><span>Score</span><strong id="finalScore">0</strong></div>
+          <div class="result-card"><span>Niveau</span><strong id="finalLevel">1</strong></div>
+          <div class="result-card"><span>Kills</span><strong id="finalKills">0</strong></div>
+          <div class="result-card"><span>Vague</span><strong id="finalWave">1</strong></div>
         </div>
         <div class="menu-actions">
           <button id="restartButton" class="primary-btn">Recommencer</button>
