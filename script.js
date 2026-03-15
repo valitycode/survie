@@ -137,7 +137,7 @@ const ctx = dom.gameCanvas.getContext('2d');
 function isTouchPreferredDevice() {
   return window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 }
-const STORAGE_KEY = 'neon-arena-survival-settings-v1-joystickfix';
+const STORAGE_KEY = 'neon-arena-survival-settings-v1-centerfix';
 
 const settings = {
   controlMode: 'joystick',
@@ -657,7 +657,10 @@ class Camera {
 
   begin(ctx, canvas) {
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height / 2);
+    const rect = canvas.getBoundingClientRect();
+    const viewWidth = rect.width || canvas.clientWidth || window.innerWidth || 1;
+    const viewHeight = rect.height || canvas.clientHeight || window.innerHeight || 1;
+    ctx.translate(viewWidth / 2, viewHeight / 2);
     ctx.translate(-this.x + this.shakeX, -this.y + this.shakeY);
   }
 
